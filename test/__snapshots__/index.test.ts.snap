@@ -1,0 +1,245 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`treeCleaner 1`] = `[]`;
+
+exports[`treeFind 1`] = `
+{
+  "children": [],
+  "data": {
+    "id": 4,
+    "pid": 1,
+    "value": 4,
+  },
+  "parent": {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 2,
+          "pid": 1,
+          "value": 2,
+        },
+        "parent": [Circular],
+      },
+      [Circular],
+    ],
+    "data": {
+      "id": 1,
+      "value": 1,
+    },
+  },
+}
+`;
+
+exports[`treeFromList 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 2,
+          "pid": 1,
+          "value": 2,
+        },
+        "parent": [Circular],
+      },
+      {
+        "children": [],
+        "data": {
+          "id": 4,
+          "pid": 1,
+          "value": 4,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 1,
+      "value": 1,
+    },
+  },
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 0,
+          "pid": 3,
+          "value": 0,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 3,
+      "value": 3,
+    },
+  },
+]
+`;
+
+exports[`treeToList 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 2,
+          "pid": 1,
+          "value": 2,
+        },
+        "parent": [Circular],
+      },
+      {
+        "children": [],
+        "data": {
+          "id": 4,
+          "pid": 1,
+          "value": 4,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 1,
+      "value": 1,
+    },
+  },
+  {
+    "children": [],
+    "data": {
+      "id": 2,
+      "pid": 1,
+      "value": 2,
+    },
+    "parent": {
+      "children": [
+        [Circular],
+        {
+          "children": [],
+          "data": {
+            "id": 4,
+            "pid": 1,
+            "value": 4,
+          },
+          "parent": [Circular],
+        },
+      ],
+      "data": {
+        "id": 1,
+        "value": 1,
+      },
+    },
+  },
+  {
+    "children": [],
+    "data": {
+      "id": 4,
+      "pid": 1,
+      "value": 4,
+    },
+    "parent": {
+      "children": [
+        {
+          "children": [],
+          "data": {
+            "id": 2,
+            "pid": 1,
+            "value": 2,
+          },
+          "parent": [Circular],
+        },
+        [Circular],
+      ],
+      "data": {
+        "id": 1,
+        "value": 1,
+      },
+    },
+  },
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 0,
+          "pid": 3,
+          "value": 0,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 3,
+      "value": 3,
+    },
+  },
+  {
+    "children": [],
+    "data": {
+      "id": 0,
+      "pid": 3,
+      "value": 0,
+    },
+    "parent": {
+      "children": [
+        [Circular],
+      ],
+      "data": {
+        "id": 3,
+        "value": 3,
+      },
+    },
+  },
+]
+`;
+
+exports[`treeTraverse 1`] = `
+[
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 2,
+          "pid": 1,
+          "value": 3,
+        },
+        "parent": [Circular],
+      },
+      {
+        "children": [],
+        "data": {
+          "id": 4,
+          "pid": 1,
+          "value": 5,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 1,
+      "value": 2,
+    },
+  },
+  {
+    "children": [
+      {
+        "children": [],
+        "data": {
+          "id": 0,
+          "pid": 3,
+          "value": 1,
+        },
+        "parent": [Circular],
+      },
+    ],
+    "data": {
+      "id": 3,
+      "value": 4,
+    },
+  },
+]
+`;
