@@ -1,7 +1,14 @@
 {
   "name": "tree-factory",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Powerful functions for various tree operations.",
+  "keywords": [
+    "node",
+    "browser",
+    "library",
+    "tree",
+    "util"
+  ],
   "license": "MIT",
   "author": {
     "name": "lisnote",
