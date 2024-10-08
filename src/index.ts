@@ -70,14 +70,14 @@ export function treeToList<T extends any[]>(
  */
 export function treeCleaner<T extends any[]>(
   tree: T,
-  predicate: (node: T[number], parent?: T[number]) => boolean,
+  predicate: (node: T[number], index: number, parent?: T[number]) => boolean,
   {
     children = 'children',
     parent,
   }: { children?: keyof T[number]; parent?: T[number] } = {},
 ): T {
   return tree.reduceRight((pre, now, index) => {
-    if (predicate(now, parent)) {
+    if (predicate(now, index, parent)) {
       return pre;
     }
     if (now[children]) {
@@ -102,7 +102,7 @@ export function treeCleaner<T extends any[]>(
  */
 export function treeTraverse<T extends any[]>(
   tree: T,
-  handle: (node: T[number], parent?: T[number]) => void,
+  handle: (node: T[number], index: number, parent?: T[number]) => void,
   {
     children = 'children',
     parent,
@@ -113,13 +113,13 @@ export function treeTraverse<T extends any[]>(
     isPreorder?: boolean;
   } = {},
 ) {
-  tree.forEach((node) => {
-    if (isPreorder) handle(node, parent);
+  tree.forEach((node, index) => {
+    if (isPreorder) handle(node, index, parent);
     const childNodes = node[children];
     if (childNodes?.length) {
       treeTraverse(childNodes, handle, { children, parent: node, isPreorder });
     }
-    if (!isPreorder) handle(node, parent);
+    if (!isPreorder) handle(node, index, parent);
   });
 }
 
@@ -135,13 +135,14 @@ export function treeTraverse<T extends any[]>(
  */
 export function treeFind<T extends any[]>(
   tree: T,
-  predicate: (node: T[number], parent?: T[number]) => boolean,
+  predicate: (node: T[number], index: number, parent?: T[number]) => boolean,
   {
     children = 'children',
     parent,
   }: { children?: keyof T[number]; parent?: T[number] } = {},
 ): T[number] | void {
-  for (const child of tree) {
+  for (const index in tree) {
+    const child = tree[index];
     if (child[children]) {
       const target = treeFind(child[children], predicate, {
         children,
@@ -149,6 +150,6 @@ export function treeFind<T extends any[]>(
       });
       if (target) return target;
     }
-    if (predicate(child, parent)) return child;
+    if (predicate(child, Number(index), parent)) return child;
   }
 }
