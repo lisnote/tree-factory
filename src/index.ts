@@ -78,12 +78,15 @@ export function treeCleaner<T extends any[]>(
   }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
 ): T {
   return tree.reduceRight((pre, node, i) => {
-    index.push(i);
-    if (predicate(node, index, parent)) {
+    if (predicate(node, [...index, i], parent)) {
       return pre;
     }
     if (node[children]) {
-      treeCleaner(node[children], predicate, { children, parent: node, index });
+      treeCleaner(node[children], predicate, {
+        children,
+        parent: node,
+        index: [...index, i],
+      });
     }
     if ((node[children]?.length ?? 0) < 1) {
       tree.splice(i, 1);
@@ -118,18 +121,17 @@ export function treeTraverse<T extends any[]>(
   } = {},
 ) {
   tree.forEach((node, i) => {
-    index.push(i);
-    if (isPreorder) handle(node, index, parent);
+    if (isPreorder) handle(node, [...index, i], parent);
     const childNodes = node[children];
     if (childNodes?.length) {
       treeTraverse(childNodes, handle, {
         children,
         parent: node,
-        index,
+        index: [...index, i],
         isPreorder,
       });
     }
-    if (!isPreorder) handle(node, index, parent);
+    if (!isPreorder) handle(node, [...index, i], parent);
   });
 }
 
@@ -153,16 +155,15 @@ export function treeFind<T extends any[]>(
   }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
 ): T[number] | void {
   for (const i in tree) {
-    index.push(Number(i));
     const child = tree[i];
     if (child[children]) {
       const target = treeFind(child[children], predicate, {
         children,
         parent: child,
-        index,
+        index: [...index, Number(i)],
       });
       if (target) return target;
     }
-    if (predicate(child, index, parent)) return child;
+    if (predicate(child, [...index, Number(i)], parent)) return child;
   }
 }
