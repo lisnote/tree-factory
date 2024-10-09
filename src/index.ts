@@ -77,15 +77,15 @@ export function treeCleaner<T extends any[]>(
     index = [],
   }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
 ): T {
-  return tree.reduceRight((pre, now, i) => {
+  return tree.reduceRight((pre, node, i) => {
     index.push(i);
-    if (predicate(now, index, parent)) {
+    if (predicate(node, index, parent)) {
       return pre;
     }
-    if (now[children]) {
-      treeCleaner(now[children], predicate, { children, parent: now });
+    if (node[children]) {
+      treeCleaner(node[children], predicate, { children, parent: node, index });
     }
-    if ((now[children]?.length ?? 0) < 1) {
+    if ((node[children]?.length ?? 0) < 1) {
       tree.splice(i, 1);
     }
     return pre;
@@ -122,7 +122,12 @@ export function treeTraverse<T extends any[]>(
     if (isPreorder) handle(node, index, parent);
     const childNodes = node[children];
     if (childNodes?.length) {
-      treeTraverse(childNodes, handle, { children, parent: node, isPreorder });
+      treeTraverse(childNodes, handle, {
+        children,
+        parent: node,
+        index,
+        isPreorder,
+      });
     }
     if (!isPreorder) handle(node, index, parent);
   });
