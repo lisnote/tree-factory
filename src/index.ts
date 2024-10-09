@@ -70,13 +70,15 @@ export function treeToList<T extends any[]>(
  */
 export function treeCleaner<T extends any[]>(
   tree: T,
-  predicate: (node: T[number], index: number, parent?: T[number]) => boolean,
+  predicate: (node: T[number], index: number[], parent?: T[number]) => boolean,
   {
     children = 'children',
     parent,
-  }: { children?: keyof T[number]; parent?: T[number] } = {},
+    index = [],
+  }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
 ): T {
-  return tree.reduceRight((pre, now, index) => {
+  return tree.reduceRight((pre, now, i) => {
+    index.push(i);
     if (predicate(now, index, parent)) {
       return pre;
     }
@@ -84,7 +86,7 @@ export function treeCleaner<T extends any[]>(
       treeCleaner(now[children], predicate, { children, parent: now });
     }
     if ((now[children]?.length ?? 0) < 1) {
-      tree.splice(index, 1);
+      tree.splice(i, 1);
     }
     return pre;
   }, tree);
@@ -102,18 +104,21 @@ export function treeCleaner<T extends any[]>(
  */
 export function treeTraverse<T extends any[]>(
   tree: T,
-  handle: (node: T[number], index: number, parent?: T[number]) => void,
+  handle: (node: T[number], index: number[], parent?: T[number]) => void,
   {
     children = 'children',
     parent,
+    index = [],
     isPreorder = false,
   }: {
     children?: keyof T[number];
     parent?: T[number];
+    index?: number[];
     isPreorder?: boolean;
   } = {},
 ) {
-  tree.forEach((node, index) => {
+  tree.forEach((node, i) => {
+    index.push(i);
     if (isPreorder) handle(node, index, parent);
     const childNodes = node[children];
     if (childNodes?.length) {
@@ -135,21 +140,24 @@ export function treeTraverse<T extends any[]>(
  */
 export function treeFind<T extends any[]>(
   tree: T,
-  predicate: (node: T[number], index: number, parent?: T[number]) => boolean,
+  predicate: (node: T[number], index: number[], parent?: T[number]) => boolean,
   {
     children = 'children',
     parent,
-  }: { children?: keyof T[number]; parent?: T[number] } = {},
+    index = [],
+  }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
 ): T[number] | void {
-  for (const index in tree) {
-    const child = tree[index];
+  for (const i in tree) {
+    index.push(Number(i));
+    const child = tree[i];
     if (child[children]) {
       const target = treeFind(child[children], predicate, {
         children,
         parent: child,
+        index,
       });
       if (target) return target;
     }
-    if (predicate(child, Number(index), parent)) return child;
+    if (predicate(child, index, parent)) return child;
   }
 }
