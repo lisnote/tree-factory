@@ -17,7 +17,11 @@ export type StandardTree<T extends any = any> = {
  */
 export function treeFromList<T extends any[] = any>(
   source: T,
-  { id = 'id', pid = 'pid' }: { id?: string; pid?: string } = {},
+  {
+    id = 'id',
+    pid = 'pid',
+    withParent = true,
+  }: { id?: string; pid?: string; withParent?: boolean } = {},
 ): StandardTree<T[number]>[] {
   const root: StandardTree<T>[] = [];
   const idNodeMap: Record<string, StandardTree<T[number]>> = {};
@@ -26,7 +30,7 @@ export function treeFromList<T extends any[] = any>(
     const parent = idNodeMap[v.data[pid]];
     if (parent) {
       parent.children.push(v);
-      v.parent = parent;
+      if (withParent) v.parent = parent;
     } else {
       root.push(v);
     }
