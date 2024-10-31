@@ -27,17 +27,15 @@ test('treeToList', () => {
 });
 
 test('treeCleaner', () => {
-  expect(
-    treeCleaner(cloneTree(), (node) => node.data.value > 4),
-  ).toMatchSnapshot();
+  expect(treeCleaner(cloneTree(), (node) => node.value > 4)).toMatchSnapshot();
 });
 
 test('treeTraverse', () => {
   const traverseTree = cloneTree();
-  treeTraverse(traverseTree, (node) => node.data.value++);
+  treeTraverse(traverseTree, (node) => node.value++);
   expect(traverseTree).toMatchSnapshot();
 });
 
 test('treeFind', () => {
-  expect(treeFind(tree, (node) => node.data.value > 3)).toMatchSnapshot();
+  expect(treeFind(tree, (node) => node.value > 3)).toMatchSnapshot();
 });

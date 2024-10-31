@@ -11,5 +11,7 @@ const source: { id: number; value: number; pid?: number }[] = [
 const tree = treeFromList(source);
 
 test('StandardTree', () => {
-  expectTypeOf(tree).toMatchTypeOf<StandardTree<(typeof source)[number]>[]>();
+  expectTypeOf(tree).toMatchTypeOf<
+    StandardTree<(typeof source)[number], true, true, 'children', 'parent'>[]
+  >();
 });

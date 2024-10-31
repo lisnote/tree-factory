@@ -1,10 +1,14 @@
 /*! type-guardian | MIT License | © 2024 lisnote */
 
-export type StandardTree<T extends any = any> = {
-  children: StandardTree[];
-  data: T;
-  parent?: StandardTree;
-};
+export type StandardTree<
+  T extends any = any,
+  F extends boolean = true,
+  WP extends boolean = true,
+  C extends string = 'children',
+  P extends string = 'parent',
+> = (F extends true ? T : { data: T }) & {
+  [K in C]: StandardTree<T, F, WP, C, P>[];
+} & (WP extends true ? { [K in P]?: StandardTree<T, F, WP, C, P> } : {});
 
 /**
  * Create a tree structure data from a flat list.
@@ -13,24 +17,47 @@ export type StandardTree<T extends any = any> = {
  * @param [options] - Customization options.
  * @param [options.id] - The key representing the unique identifier for each node.
  * @param [options.pid] - The key representing the parent identifier for each node.
+ * @param [options.flat] - Whether to flatten the item data or not.
+ * @param [options.withParent] - Whether to include a reference to the parent node in each child.
+ * @param [options.children] - The key representing children nodes in each tree node.
+ * @param [options.parent] - The parent node of the current node being processed.
  * @returns The root nodes of the resulting tree structure.
  */
-export function treeFromList<T extends any[] = any>(
+export function treeFromList<
+  T extends any[],
+  F extends boolean = true,
+  WP extends boolean = true,
+  C extends string = 'children',
+  P extends string = 'parent',
+>(
   source: T,
-  {
+  options: {
+    id?: string;
+    pid?: string;
+    flat?: F;
+    withParent?: WP;
+    children?: C;
+    parent?: P;
+  } = {},
+): StandardTree<T[number], F, WP, C, P>[] {
+  const {
     id = 'id',
     pid = 'pid',
+    flat = true,
     withParent = true,
-  }: { id?: string; pid?: string; withParent?: boolean } = {},
-): StandardTree<T[number]>[] {
-  const root: StandardTree<T>[] = [];
-  const idNodeMap: Record<string, StandardTree<T[number]>> = {};
-  source.forEach((v) => (idNodeMap[v[id]] = { children: [], data: v }));
+    children = 'children',
+    parent = 'parent',
+  } = options;
+  const root: StandardTree<T[number], F, WP, C, P>[] = [];
+  const idNodeMap: Record<string, StandardTree<T[number], F, WP, C, P>> = {};
+  source.forEach(
+    (v) => (idNodeMap[v[id]] = { ...(flat ? v : { data: v }), [children]: [] }),
+  );
   Object.values(idNodeMap).forEach((v) => {
-    const parent = idNodeMap[v.data[pid]];
-    if (parent) {
-      parent.children.push(v);
-      if (withParent) v.parent = parent;
+    const parentNode = idNodeMap[flat ? v[pid] : v.data[pid]];
+    if (parentNode) {
+      parentNode[children as C].push(v);
+      if (withParent) v[parent as string] = parentNode;
     } else {
       root.push(v);
     }
