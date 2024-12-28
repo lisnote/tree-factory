@@ -1,4 +1,4 @@
-/*! type-guardian | MIT License | © 2024 lisnote */
+/*! tree-factory | MIT License | © 2024 lisnote */
 
 export type StandardTree<
   T extends any = any,
@@ -97,6 +97,7 @@ export function treeToList<T extends any[]>(
  * @param [options] - Customization options.
  * @param [options.children] - The key representing children nodes in each tree node.
  * @param [options.parent] - The parent node of the current node being processed.
+ * @param [options.fullClean] - Determines whether to continue processing child nodes even if the current node satisfies the predicate.
  * @return The cleaned tree.
  */
 export function treeCleaner<T extends any[]>(
@@ -106,10 +107,17 @@ export function treeCleaner<T extends any[]>(
     children = 'children',
     parent,
     index = [],
-  }: { children?: keyof T[number]; parent?: T[number]; index?: number[] } = {},
+    fullClean = false,
+  }: {
+    children?: keyof T[number];
+    parent?: T[number];
+    index?: number[];
+    fullClean?: boolean;
+  } = {},
 ): T {
   return tree.reduceRight((pre, node, i) => {
-    if (predicate(node, [...index, i], parent)) {
+    const predicateResult = predicate(node, [...index, i], parent);
+    if (!fullClean && predicateResult) {
       return pre;
     }
     if (node[children]) {
@@ -117,9 +125,10 @@ export function treeCleaner<T extends any[]>(
         children,
         parent: node,
         index: [...index, i],
+        fullClean,
       });
     }
-    if ((node[children]?.length ?? 0) < 1) {
+    if (!predicateResult && !node[children]?.length) {
       tree.splice(i, 1);
     }
     return pre;
